@@ -7,23 +7,32 @@
     "node": ">=8.0.0"
   },
   "dependencies": {
+    "@types/bluebird": "^3.5.32",
+    "@types/validator": "^13.0.0",
     "actionhero": "22.1.0",
-    "ws": "latest",
+    "ah-sequelize-plugin": "^2.1.0",
     "ioredis": "latest",
-    "winston": "latest"
+    "pg": "^8.2.1",
+    "pg-hstore": "^2.3.3",
+    "reflect-metadata": "^0.1.13",
+    "sequelize": "^5.21.10",
+    "sequelize-typescript": "^1.1.0",
+    "winston": "latest",
+    "ws": "latest"
   },
   "devDependencies": {
-    "@types/node": "latest",
     "@types/jest": "latest",
+    "@types/node": "latest",
     "jest": "latest",
     "prettier": "latest",
+    "sequelize-cli": "^5.5.1",
     "ts-jest": "latest",
     "ts-node-dev": "latest",
     "typescript": "latest"
   },
   "scripts": {
     "postinstall": "npm run build",
-    "dev": "ts-node-dev --no-deps --transpile-only ./src/server",
+    "dev": "export $(cat .env) && ts-node-dev --no-deps --transpile-only ./src/server",
     "debug": "tsc && ts-node-dev --transpile-only --no-deps --inspect -- ./src/server ",
     "start": "node ./dist/server.js",
     "actionhero": "actionhero",
