@@ -8,9 +8,9 @@ import {
 import * as uuid from "uuid";
 
 @Table({tableName: "tasks"})
-class Task extends Model<Task> {
-  @Column
+export class Task extends Model<Task> {
   @PrimaryKey
+  @Column
   guid: string;
 
   @Column
