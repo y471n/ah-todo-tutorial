@@ -25,6 +25,10 @@ export const DEFAULT = {
       ]
 
       ---------------------- */
+
+      get: [
+        { path: '/tasks', action: 'task:list' },
+      ]
     };
   },
 };

@@ -3,7 +3,7 @@ import { Action } from "actionhero";
 export class ListTasks extends Action {
   constructor() {
     super();
-    this.name = "tasks:list";
+    this.name = "task:list";
     this.description = "List the tasks";
     this.outputExample = {};
   }
