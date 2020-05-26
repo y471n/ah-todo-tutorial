@@ -28,6 +28,9 @@ export const DEFAULT = {
 
       get: [
         { path: '/tasks', action: 'task:list' },
+      ],
+      post: [
+        { path: '/tasks', action: 'task:create' },
       ]
     };
   },
