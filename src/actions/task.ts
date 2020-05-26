@@ -1,4 +1,5 @@
 import { Action } from "actionhero";
+import { Task } from '../models/Task';
 
 export class ListTasks extends Action {
   constructor() {
@@ -8,8 +9,8 @@ export class ListTasks extends Action {
     this.outputExample = {};
   }
 
-  async run(data) {
-    // your logic here
-    data.response.ok = true;
+  async run({ params, response }) {
+    const tasks = await Task.findAll();
+    response.tasks = tasks;
   }
 }
