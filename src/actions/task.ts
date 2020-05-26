@@ -78,3 +78,25 @@ export class UpdateTask extends Action {
     response.task = tasks[0];
   }
 }
+
+export class DeleteAction extends Action {
+  constructor() {
+    super();
+    this.name = "task:delete";
+    this.description = "Delete a Task";
+  }
+
+  async run({ connection, response }) {
+    const deleteRowCount = await Task.destroy({
+      where: {
+        guid: connection.params.taskId
+      }
+    });
+
+    if(deleteRowCount < 1) {
+      throw new Error(`No such task exists with guid ${connection.params.taskId}`);
+    }
+
+    response.message = "Task Deleted Successfully";
+  }
+}

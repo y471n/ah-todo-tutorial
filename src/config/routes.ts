@@ -34,6 +34,9 @@ export const DEFAULT = {
       ],
       patch: [
         { path: '/tasks/:taskId', action: 'task:update' }
+      ],
+      delete: [
+        { path: '/tasks/:taskId', action: 'task:delete' }
       ]
     };
   },
