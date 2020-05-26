@@ -7,7 +7,7 @@ import {
 } from 'sequelize-typescript'
 import * as uuid from "uuid";
 
-@Table({tableName: "tasks"})
+@Table({tableName: "tasks", timestamps: false, paranoid: false })
 export class Task extends Model<Task> {
   @PrimaryKey
   @Column
