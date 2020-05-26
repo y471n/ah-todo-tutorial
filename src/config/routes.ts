@@ -31,6 +31,9 @@ export const DEFAULT = {
       ],
       post: [
         { path: '/tasks', action: 'task:create' },
+      ],
+      patch: [
+        { path: '/tasks/:taskId', action: 'task:update' }
       ]
     };
   },
