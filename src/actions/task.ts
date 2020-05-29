@@ -1,5 +1,5 @@
 import { Action } from "actionhero";
-import { Task } from '../models/Task';
+import { Task } from "../models/Task";
 import { type } from "os";
 
 export class ListTasks extends Action {
@@ -25,12 +25,14 @@ export class CreateTask extends Action {
       title: {
         required: true,
         validator: (param, connection, actionTemplate) => {
-          if(typeof param !== "string") {
-            throw new Error(`Expected type of title to be string got ${typeof param}`);
+          if (typeof param !== "string") {
+            throw new Error(
+              `Expected type of title to be string got ${typeof param}`
+            );
           }
-        }
-      }
-    }
+        },
+      },
+    };
   }
 
   async run({ params, response }) {
@@ -48,31 +50,38 @@ export class UpdateTask extends Action {
       title: {
         required: false,
         validator: (param) => {
-          if(typeof param !== "string") {
-            throw new Error(`Expected type of title to be string, got ${typeof param}`);
+          if (typeof param !== "string") {
+            throw new Error(
+              `Expected type of title to be string, got ${typeof param}`
+            );
           }
-        }
+        },
       },
       done: {
         required: false,
         validator: (param) => {
-          if(typeof param !== "boolean") {
-            throw new Error(`Expected type of done to be string, got ${typeof param}`);
+          if (typeof param !== "boolean") {
+            throw new Error(
+              `Expected type of done to be string, got ${typeof param}`
+            );
           }
-        }
-      }
-    }
+        },
+      },
+    };
   }
 
   async run({ connection, params, response }) {
     // Why is connection required, then why not use connection.params everywhere?
-    const [numberOfUpdatedRows, tasks] = await Task.update( {done: true}, {
-      where: {
-        guid: connection.params.taskId
-      },
-      returning: true
-    });
-    if(numberOfUpdatedRows < 1) {
+    const [numberOfUpdatedRows, tasks] = await Task.update(
+      { done: true },
+      {
+        where: {
+          guid: connection.params.taskId,
+        },
+        returning: true,
+      }
+    );
+    if (numberOfUpdatedRows < 1) {
       throw new Error(`No such task exists`);
     }
     response.task = tasks[0];
@@ -89,12 +98,14 @@ export class DeleteAction extends Action {
   async run({ connection, response }) {
     const deleteRowCount = await Task.destroy({
       where: {
-        guid: connection.params.taskId
-      }
+        guid: connection.params.taskId,
+      },
     });
 
-    if(deleteRowCount < 1) {
-      throw new Error(`No such task exists with guid ${connection.params.taskId}`);
+    if (deleteRowCount < 1) {
+      throw new Error(
+        `No such task exists with guid ${connection.params.taskId}`
+      );
     }
 
     response.message = "Task Deleted Successfully";
