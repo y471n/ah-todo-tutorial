@@ -26,18 +26,10 @@ export const DEFAULT = {
 
       ---------------------- */
 
-      get: [
-        { path: '/tasks', action: 'task:list' },
-      ],
-      post: [
-        { path: '/tasks', action: 'task:create' },
-      ],
-      patch: [
-        { path: '/tasks/:taskId', action: 'task:update' }
-      ],
-      delete: [
-        { path: '/tasks/:taskId', action: 'task:delete' }
-      ]
+      get: [{ path: "/tasks", action: "task:list" }],
+      post: [{ path: "/tasks", action: "task:create" }],
+      patch: [{ path: "/tasks/:taskId", action: "task:update" }],
+      delete: [{ path: "/tasks/:taskId", action: "task:delete" }],
     };
   },
 };

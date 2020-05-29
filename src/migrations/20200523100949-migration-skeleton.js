@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -9,22 +9,22 @@ module.exports = {
       Example:
       return queryInterface.createTable('users', { id: Sequelize.INTEGER });
     */
-   await queryInterface.createTable('tasks', {
-     guid: {
-       type: Sequelize.DataTypes.UUID,
-       defaultValue: Sequelize.DataTypes.UUIDV4,
-       primaryKey: true
-     },
-     title: {
-       type: Sequelize.DataTypes.STRING(50),
-       allowNull: false
-     },
-     done: {
-       type: Sequelize.DataTypes.BOOLEAN,
-       defaultValue: false,
-       allowNull: false
-     }
-   })
+    await queryInterface.createTable("tasks", {
+      guid: {
+        type: Sequelize.DataTypes.UUID,
+        defaultValue: Sequelize.DataTypes.UUIDV4,
+        primaryKey: true,
+      },
+      title: {
+        type: Sequelize.DataTypes.STRING(50),
+        allowNull: false,
+      },
+      done: {
+        type: Sequelize.DataTypes.BOOLEAN,
+        defaultValue: false,
+        allowNull: false,
+      },
+    });
   },
 
   down: async (queryInterface, Sequelize) => {
@@ -35,6 +35,6 @@ module.exports = {
       Example:
       return queryInterface.dropTable('users');
     */
-   await queryInterface.dropTable('Tasks');
-  }
+    await queryInterface.dropTable("Tasks");
+  },
 };

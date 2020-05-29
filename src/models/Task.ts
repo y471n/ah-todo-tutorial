@@ -1,13 +1,13 @@
 import {
-    Table,
-    Model,
-    Column,
-    PrimaryKey,
-    BeforeCreate
-} from 'sequelize-typescript'
+  Table,
+  Model,
+  Column,
+  PrimaryKey,
+  BeforeCreate,
+} from "sequelize-typescript";
 import * as uuid from "uuid";
 
-@Table({tableName: "tasks", timestamps: false, paranoid: false })
+@Table({ tableName: "tasks", timestamps: false, paranoid: false })
 export class Task extends Model<Task> {
   @PrimaryKey
   @Column
@@ -21,8 +21,8 @@ export class Task extends Model<Task> {
 
   @BeforeCreate
   static generateGuid(instance) {
-    if(!instance.guid) {
-        instance.guid = uuid.v4()
+    if (!instance.guid) {
+      instance.guid = uuid.v4();
     }
   }
 }
