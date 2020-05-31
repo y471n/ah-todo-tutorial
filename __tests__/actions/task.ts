@@ -126,9 +126,15 @@ describe("Action", () => {
       expect(tasks).toBeDefined();
     });
 
-    test("the task object is a list", async () => {
+    test("should return a task object which is of type array", async () => {
       const { tasks } = await specHelper.runAction("task:list");
       expect(Array.isArray(tasks)).toBe(true);
+    });
+
+    test("should return tasks list of length > 0", async () => {
+      await specHelper.runAction("task:create", { title: "Sing on Stage" });
+      const { tasks } = await specHelper.runAction("task:list");
+      expect(tasks.length).toBeGreaterThan(0);
     });
   });
 });
