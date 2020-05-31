@@ -225,4 +225,41 @@ describe("Action", () => {
       );
     });
   });
+
+  describe("Delete Task", () => {
+    beforeAll(async () => {
+      api = await actionhero.start();
+    });
+
+    afterAll(async () => {
+      await actionhero.stop();
+    });
+
+    test("Should throw error if task with taskId does not exist", async () => {
+      const taskId = "2d901d96-2244-421d-9f91-38f25f8d565d";
+      const { error } = await specHelper.runAction("task:delete", {
+        taskId: taskId,
+      });
+      expect(error).toBeDefined();
+      expect(error).toBe(`Error: No such task exists with taskId ${taskId}`);
+    });
+
+    test("Should remove from database the particular task", async () => {
+      const { taskId } = await specHelper.runAction("task:create", {
+        title: "Deploy Actionhero API",
+      });
+      const { message } = await specHelper.runAction("task:delete", {
+        taskId: taskId,
+      });
+      expect(message).toBe("Task Deleted Successfully");
+
+      const response = await specHelper.runAction("task:get", {
+        taskId: taskId,
+      });
+      expect(response.error).toBeTruthy();
+      expect(response.error).toBe(
+        `Error: Task does not exist with taskId: ${taskId}`
+      );
+    });
+  });
 });
