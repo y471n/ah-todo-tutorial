@@ -1,6 +1,27 @@
 import { Action } from "actionhero";
 import { Task } from "../models/Task";
-import { type } from "os";
+
+export class GetTask extends Action {
+  constructor() {
+    super();
+    this.name = "task:get";
+    this.description = "Get a Task using GUID";
+    this.inputs = {
+      taskId: {
+        required: true,
+      },
+    };
+  }
+
+  async run({ connection, response }) {
+    const taskId = connection.params.taskId;
+    const task = await Task.findOne({ where: { guid: taskId } });
+    if (!task) {
+      throw new Error(`Task does not exist with taskId: ${taskId}`);
+    }
+    response.task = task;
+  }
+}
 
 export class ListTasks extends Action {
   constructor() {
