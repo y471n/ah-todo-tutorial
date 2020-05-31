@@ -33,14 +33,16 @@ describe("Action", () => {
 
     test("Should response with task object when task with passed GUID exists", async () => {
       const newTaskTitle = "Cure Cancer";
-      const { guid } = await specHelper.runAction("task:create", {
+      const { taskId } = await specHelper.runAction("task:create", {
         title: newTaskTitle,
       });
-      expect(guid).toBeTruthy();
-      const response = await specHelper.runAction("task:get", { taskId: guid });
+      expect(taskId).toBeTruthy();
+      const response = await specHelper.runAction("task:get", {
+        taskId: taskId,
+      });
       expect(response.task).toBeTruthy();
       expect(response.error).toBeFalsy();
-      expect(response.task.guid).toBe(guid);
+      expect(response.task.guid).toBe(taskId);
       expect(response.task.title).toBe(newTaskTitle);
       expect(response.task.done).toBe(false);
     });
@@ -57,7 +59,7 @@ describe("Action", () => {
 
     test("should not create a task without title param", async () => {
       const response = await specHelper.runAction("task:create");
-      expect(response.guid).toBeFalsy();
+      expect(response.taskId).toBeFalsy();
       expect(response.error).toBeTruthy();
       expect(response.error).toBe(
         "Error: title is a required parameter for this action"
@@ -66,7 +68,7 @@ describe("Action", () => {
 
     test("should not create a task when the title is not of type string", async () => {
       const response = await specHelper.runAction("task:create", { title: 1 });
-      expect(response.guid).toBeFalsy();
+      expect(response.taskId).toBeFalsy();
       expect(response.error).toBeTruthy();
       expect(response.error).toBe(
         "Error: Expected type of title to be string got number"
@@ -84,30 +86,34 @@ describe("Action", () => {
       expect(totalTasksCount).toBe(oldTaskCount + 1);
     });
 
-    test("should return a guid for new task created", async () => {
-      const { guid } = await specHelper.runAction("task:create", {
+    test("should return a guid as taskId for new task created", async () => {
+      const { taskId } = await specHelper.runAction("task:create", {
         title: "Time Travel",
       });
-      const isGUID = guid.match(
+      const isGUID = taskId.match(
         "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
       );
       expect(isGUID).toBeTruthy();
     });
 
     test("should have 'done' set to false by default for the new task", async () => {
-      const { guid } = await specHelper.runAction("task:create", {
+      const { taskId } = await specHelper.runAction("task:create", {
         title: "Visit North Pole",
       });
-      const { task } = await specHelper.runAction("task:get", { taskId: guid });
+      const { task } = await specHelper.runAction("task:get", {
+        taskId: taskId,
+      });
       expect(task.done).toBe(false);
     });
 
     test("should create new task with 'done' set to false even if 'done' is sent as true in the params", async () => {
-      const { guid } = await specHelper.runAction("task:create", {
+      const { taskId } = await specHelper.runAction("task:create", {
         title: "Meet Mickey Mouse",
         done: true,
       });
-      const { task } = await specHelper.runAction("task:get", { taskId: guid });
+      const { task } = await specHelper.runAction("task:get", {
+        taskId: taskId,
+      });
       expect(task.done).toBe(false);
     });
   });
@@ -135,6 +141,88 @@ describe("Action", () => {
       await specHelper.runAction("task:create", { title: "Sing on Stage" });
       const { tasks } = await specHelper.runAction("task:list");
       expect(tasks.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe("Update Task", () => {
+    beforeAll(async () => {
+      api = await actionhero.start();
+    });
+
+    afterAll(async () => {
+      await actionhero.stop();
+    });
+
+    test("Should update title and done status", async () => {
+      const { taskId } = await specHelper.runAction("task:create", {
+        title: "Fight Tyson",
+      });
+      const newTitle = "Fight Muhammad Ali";
+      const response = await specHelper.runAction("task:update", {
+        title: newTitle,
+        done: true,
+        taskId: taskId,
+      });
+      expect(response.task).toBeDefined();
+      expect(response.task.title).toBe(newTitle);
+      expect(response.task.done).toBe(true);
+    });
+
+    test("Should update a single parameter", async () => {
+      const { taskId } = await specHelper.runAction("task:create", {
+        title: "Deploy Actionhero API",
+      });
+      const newDoneStatus = false;
+      const response = await specHelper.runAction("task:update", {
+        done: newDoneStatus,
+        taskId: taskId,
+      });
+      expect(response.task).toBeDefined();
+      expect(response.task.done).toBe(newDoneStatus);
+
+      const newTitle = "Watch NodeConf EU";
+      const response2 = await specHelper.runAction("task:update", {
+        title: newTitle,
+        taskId: taskId,
+      });
+      expect(response2.task).toBeDefined();
+      expect(response2.task.title).toBe(newTitle);
+    });
+
+    test("Should not update task", async () => {
+      const { taskId } = await specHelper.runAction("task:create", {
+        title: "Defeat Thanos",
+      });
+      const response = await specHelper.runAction("task:update", {
+        taskId: taskId,
+      });
+      expect(response.error).toBe("Error: No update needed");
+    });
+
+    test("Should throw Error when title or done type is incorrect", async () => {
+      const { taskId } = await specHelper.runAction("task:create", {
+        title: "Build Rome",
+      });
+
+      const newTitle = 1;
+      const response = await specHelper.runAction("task:update", {
+        title: newTitle,
+        taskId: taskId,
+      });
+      expect(response.task).toBeUndefined();
+      expect(response.error).toBe(
+        "Error: Expected type of title to be string, got number"
+      );
+
+      const newDoneStatus = "Bad Status";
+      const response2 = await specHelper.runAction("task:update", {
+        done: newDoneStatus,
+        taskId: taskId,
+      });
+      expect(response2.task).toBeUndefined();
+      expect(response2.error).toBe(
+        "Error: Expected type of done to be boolean, got string"
+      );
     });
   });
 });

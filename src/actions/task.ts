@@ -5,7 +5,7 @@ export class GetTask extends Action {
   constructor() {
     super();
     this.name = "task:get";
-    this.description = "Get a Task using GUID";
+    this.description = "Get a Task using GUID as taskId";
     this.inputs = {
       taskId: {
         required: true,
@@ -58,7 +58,7 @@ export class CreateTask extends Action {
 
   async run({ params, response }) {
     const task = await Task.create(params);
-    response.guid = task.guid;
+    response.taskId = task.guid;
   }
 }
 
@@ -83,7 +83,7 @@ export class UpdateTask extends Action {
         validator: (param) => {
           if (typeof param !== "boolean") {
             throw new Error(
-              `Expected type of done to be string, got ${typeof param}`
+              `Expected type of done to be boolean, got ${typeof param}`
             );
           }
         },
@@ -93,8 +93,14 @@ export class UpdateTask extends Action {
 
   async run({ connection, params, response }) {
     // Why is connection required, then why not use connection.params everywhere?
+    const newTitle = params.title;
+    const newDoneStatus = params.done;
+    console.log(params);
+    if (!newTitle && newDoneStatus === undefined) {
+      throw new Error("No update needed");
+    }
     const [numberOfUpdatedRows, tasks] = await Task.update(
-      { done: true },
+      { title: newTitle, done: newDoneStatus },
       {
         where: {
           guid: connection.params.taskId,
@@ -125,7 +131,7 @@ export class DeleteAction extends Action {
 
     if (deleteRowCount < 1) {
       throw new Error(
-        `No such task exists with guid ${connection.params.taskId}`
+        `No such task exists with taskId ${connection.params.taskId}`
       );
     }
 
