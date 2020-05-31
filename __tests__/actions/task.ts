@@ -31,7 +31,7 @@ describe("Action", () => {
       );
     });
 
-    test.only("Should response with task object when task with passed GUID exists", async () => {
+    test("Should response with task object when task with passed GUID exists", async () => {
       const newTaskTitle = "Cure Cancer";
       const { guid } = await specHelper.runAction("task:create", {
         title: newTaskTitle,
@@ -98,10 +98,18 @@ describe("Action", () => {
       const { guid } = await specHelper.runAction("task:create", {
         title: "Visit North Pole",
       });
-      const { tasks } = await specHelper.runAction("task:list");
+      const { task } = await specHelper.runAction("task:get", { taskId: guid });
+      expect(task.done).toBe(false);
     });
 
-    test("should create new task with 'done' set to false even if 'done' is sent as true in the params", () => {});
+    test("should create new task with 'done' set to false even if 'done' is sent as true in the params", async () => {
+      const { guid } = await specHelper.runAction("task:create", {
+        title: "Meet Mickey Mouse",
+        done: true,
+      });
+      const { task } = await specHelper.runAction("task:get", { taskId: guid });
+      expect(task.done).toBe(false);
+    });
   });
 
   describe("Task List", () => {
