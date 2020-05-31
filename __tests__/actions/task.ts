@@ -3,7 +3,7 @@ const actionhero = new Process();
 let api;
 
 describe("Action", () => {
-  describe("task", () => {
+  describe("Task List", () => {
     beforeAll(async () => {
       api = await actionhero.start();
     });
@@ -12,9 +12,10 @@ describe("Action", () => {
       await actionhero.stop();
     });
 
-    test("returns OK", async () => {
-      const { ok } = await specHelper.runAction("task");
-      expect(ok).toEqual(true);
+    test("should return a list", async () => {
+      const { tasks } = await specHelper.runAction("task:list");
+      console.log(tasks);
+      expect(tasks).toBeDefined();
     });
   });
 });
